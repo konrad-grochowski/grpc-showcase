@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo clippy -D warnings
-      - run: cargo fmt --check
+      - run: cargo fmt --check --all
+      - run: cargo clippy -- -D warnings
       - run: cargo test --workspace
