@@ -1,5 +1,5 @@
 [workspace]
-members = [
+members = [ "grpc-codegen",
   "grpc-store",
   "rest-api",
 ]

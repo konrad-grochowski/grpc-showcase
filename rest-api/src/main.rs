@@ -2,15 +2,12 @@ use std::net::SocketAddr;
 
 use axum::routing::post;
 use axum::{extract::State, routing::get, Json, Router};
-use pb::key_value_storage_client::KeyValueStorageClient;
-use pb::StoreRequest;
+use grpc_codegen::key_value_storage_client::KeyValueStorageClient;
+use grpc_codegen::StoreRequest;
 use tonic::transport::Channel;
 
-use pb::{LoadReply, LoadRequest};
+use grpc_codegen::{LoadReply, LoadRequest};
 
-pub(crate) mod pb {
-    tonic::include_proto!("key_value_store");
-}
 
 
 

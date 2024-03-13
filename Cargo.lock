@@ -378,15 +378,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
+name = "grpc-codegen"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "serde",
+ "tonic",
+ "tonic-build",
+]
+
+[[package]]
 name = "grpc-store"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "grpc-codegen",
  "hyper 1.2.0",
+ "prost",
  "rustls-pemfile",
+ "serde",
  "tokio",
  "tonic",
+ "tonic-build",
  "tower",
  "tower-http",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -991,6 +1008,7 @@ dependencies = [
  "axum-macros",
  "axum-server",
  "features",
+ "grpc-codegen",
  "hyper 1.2.0",
  "prost",
  "rustls-pemfile",

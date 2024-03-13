@@ -1,10 +1,18 @@
 ## TODO list
 - [ ] unit tests
+    - [x] grpc-store
+    - [ ] rest-api
 - [ ] docker setup
+    - [ ] dockerfiles
+    - [ ] docker compose 
 - [ ] integration tests
 - [ ] put proto buf codegen in separate crate
-- [ ] HTTPS
-- [ ] TLS
+- security
+    - [ ] HTTPS
+    - [ ] TLS
 - [ ] full docs
-- [ ] CI/CD
 - [ ] cargo machete
+- [ ] CI/CD
+    - [x] basics
+    - [ ] verify
+    - [ ]check for more
