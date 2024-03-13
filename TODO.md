@@ -1,19 +1,30 @@
-## TODO list
+# TODO list
+
+## 1. prio
 - [ ] unit tests
     - [x] grpc-store
     - [ ] rest-api
 - [ ] docker setup
-    - [ ] dockerfiles
+    - [x] dockerfiles
     - [ ] docker compose 
 - [ ] integration tests
-- [ ] put proto buf codegen in separate crate
 - security
     - [ ] HTTPS
     - [ ] TLS
 - [ ] full docs
+
+## 2. prio
+
+- [ ] makefile
+
+
+## 3. prio
+
 - [ ] cargo machete
 - [ ] CI/CD
     - [x] basics
-    - [ ] verify
+    - [x] verify
     - [ ]check for more
-- [ ] makefile
+
+## done
+- [x] put proto buf codegen in separate crate

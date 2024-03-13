@@ -89,13 +89,7 @@ async fn load_from_memory() -> anyhow::Result<()> {
     storage.map.write().await.insert(key.clone(), value.clone());
     let request = tonic::Request::new(LoadRequest { key: key.clone() });
     let response = storage.load_key_value(request).await?;
-    assert_eq!(
-        response.into_inner(),
-        LoadReply {
-            key,
-            value
-        }
-    );
+    assert_eq!(response.into_inner(), LoadReply { key, value });
 
     Ok(())
 }
