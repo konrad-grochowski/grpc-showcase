@@ -1,9 +1,9 @@
-name: Basic Rust CI/CD
+name: Basic Rust CI
 on: [push, pull_request]
 
 jobs:
   test:
-    name: cargo test
+    name: Rust format check, lint & test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
