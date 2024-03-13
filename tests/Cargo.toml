@@ -11,3 +11,7 @@ grpc-store = { path = "../grpc-store" }
 testcontainers = "0.15.0"
 anyhow = "1.0.81"
 
+[[test]]
+name = "happy_path_integration_test"
+path = "happy_path_integration_test.rs"
+

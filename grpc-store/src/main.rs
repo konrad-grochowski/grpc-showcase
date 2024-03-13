@@ -61,10 +61,7 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
             .ok_or_else(|| tonic::Status::not_found("There is no entry under provided key"))?
             .clone();
 
-        let res = tonic::Response::new(LoadReply {
-            key,
-            value,
-        }); //TODO handle None
+        let res = tonic::Response::new(LoadReply { key, value }); 
         tracing::debug!(?res, "Sending response");
 
         Ok(res)
