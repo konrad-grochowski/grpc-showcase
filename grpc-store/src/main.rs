@@ -10,9 +10,10 @@ use tonic::{transport::Server, Request, Response, Status};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
-    let addr = "[::1]:50051".parse()?;
+    let addr = "[::]:3001".parse()?;
     let greeter = InMemoryKeyValueStorage::new();
 
+    tracing::info!("Starting gRPC server...");
     Server::builder()
         .add_service(KeyValueStorageServer::new(greeter))
         .serve(addr)
@@ -55,11 +56,14 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
         let map_guard = self.map.read().await;
 
         let key = request.into_inner().key;
-        let maybe_value = map_guard.get(&key).cloned();
+        let value = map_guard
+            .get(&key)
+            .ok_or_else(|| tonic::Status::not_found("There is no entry under provided key"))?
+            .clone();
 
         let res = tonic::Response::new(LoadReply {
             key,
-            value: maybe_value.unwrap(),
+            value,
         }); //TODO handle None
         tracing::debug!(?res, "Sending response");
 

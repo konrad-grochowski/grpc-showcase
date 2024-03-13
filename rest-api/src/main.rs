@@ -18,7 +18,7 @@ async fn main() {
     // This makes connection multiplexing with `Arc<Mutex<...>>` redundant.
     // https://docs.rs/tonic/latest/tonic/client/index.html
     let grpc_client: KeyValueStorageClient<Channel> =
-        KeyValueStorageClient::connect("http://[::1]:50051")
+        KeyValueStorageClient::connect("http://grpc-store:3001")
             .await
             .expect("Failed to connect to gRPC server");
 
@@ -60,6 +60,7 @@ async fn store_key_value(
 }
 
 /// Handles requests to load a key-value pair inside the gRPC memory, given the key.
+/// Returns key-value pair in case of successful gRPC reply.
 async fn load_key_value(
     State(mut grpc_client): State<KeyValueStorageClient<Channel>>,
     Json(load_request): Json<LoadRequest>,
@@ -83,6 +84,7 @@ async fn load_key_value(
     Err(hyper_status_code)
 }
 
+/// Converts `tonic::Status` into `hyper::StatusCode`.
 fn tonic_status_into_hyper_status_code(tonic_status: tonic::Status) -> hyper::StatusCode {
     match tonic_status.code() {
         tonic::Code::Ok => hyper::StatusCode::OK,
