@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package key_value_store;
+
+service KeyValueStorage {
+    rpc StoreKeyValue (StoreRequest) returns (google.protobuf.Empty);
+    rpc LoadKeyValue (LoadRequest) returns (LoadReply);
+}
+
+message StoreRequest {
+   string key = 1;
+   string value = 2;
+}
+
+
+message LoadRequest {
+    string key = 1;
+} 
+
+
+message LoadReply {
+   string key = 1;
+   string value = 2;
+} 

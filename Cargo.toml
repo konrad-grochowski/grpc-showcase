@@ -1,0 +1,6 @@
+[workspace]
+members = [
+  "grpc-store",
+  "rest-api",
+]
+resolver = "2"
