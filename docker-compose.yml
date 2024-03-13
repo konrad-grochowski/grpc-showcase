@@ -1,0 +1,17 @@
+version: '3'
+services:
+  rest-api:
+    build:
+      context: ./
+      dockerfile: ./rest-api/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - grpc-store
+    env_file:
+      - .env
+
+  grpc-store:
+    build:
+      context: ./
+      dockerfile: ./grpc-store/Dockerfile
