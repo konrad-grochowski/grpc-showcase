@@ -8,9 +8,6 @@ use tonic::transport::Channel;
 
 use grpc_codegen::{LoadReply, LoadRequest};
 
-
-
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
@@ -61,7 +58,6 @@ async fn store_key_value(
     );
     hyper_status_code
 }
-
 
 /// Handles requests to load a key-value pair inside the gRPC memory, given the key.
 async fn load_key_value(

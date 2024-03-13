@@ -1,13 +1,10 @@
-
-
-
 use std::collections::HashMap;
 
+use grpc_codegen::key_value_storage_server::KeyValueStorage;
 use grpc_codegen::key_value_storage_server::KeyValueStorageServer;
+use grpc_codegen::{LoadReply, LoadRequest, StoreRequest};
 use tokio::sync::RwLock;
 use tonic::{transport::Server, Request, Response, Status};
-use grpc_codegen::{StoreRequest, LoadRequest, LoadReply};
-use grpc_codegen::key_value_storage_server::KeyValueStorage;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -24,15 +21,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-
 #[derive(Debug, Default)]
 pub struct InMemoryKeyValueStorage {
-    map: RwLock<HashMap<String, String>>
+    map: RwLock<HashMap<String, String>>,
 }
 
 impl InMemoryKeyValueStorage {
     pub fn new() -> Self {
-        Self { map: RwLock::new(HashMap::new()) }
+        Self {
+            map: RwLock::new(HashMap::new()),
+        }
     }
 }
 
@@ -46,7 +44,7 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
         let mut map_guard = self.map.write().await;
         let inner = request.into_inner();
         map_guard.insert(inner.key, inner.value);
-        tracing::debug!("Successfully inserted key");    
+        tracing::debug!("Successfully inserted key");
         Ok(Response::new(()))
     }
 
@@ -55,13 +53,16 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
         request: Request<LoadRequest>,
     ) -> Result<Response<LoadReply>, Status> {
         let map_guard = self.map.read().await;
-        
-        let key  = request.into_inner().key;
+
+        let key = request.into_inner().key;
         let maybe_value = map_guard.get(&key).cloned();
-        
-        let res = tonic::Response::new(LoadReply{ key: key, value: maybe_value.unwrap() });//TODO handle None
-        tracing::debug!(?res, "Sending response");    
-        
+
+        let res = tonic::Response::new(LoadReply {
+            key: key,
+            value: maybe_value.unwrap(),
+        }); //TODO handle None
+        tracing::debug!(?res, "Sending response");
+
         Ok(res)
     }
 }
@@ -69,27 +70,32 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
 #[tokio::test]
 async fn store_in_memory() -> anyhow::Result<()> {
     let storage = InMemoryKeyValueStorage::new();
-    let (key, value) : (String, String)= ("key".into(), "value".into());
+    let (key, value): (String, String) = ("key".into(), "value".into());
 
-    let request = tonic::Request::new(StoreRequest{key: key.clone(), value: value.clone()});
+    let request = tonic::Request::new(StoreRequest {
+        key: key.clone(),
+        value: value.clone(),
+    });
     let _response = storage.store_key_value(request).await?;
     assert_eq!(storage.map.read().await.get(&key), Some(&value));
     Ok(())
-
 }
 
 #[tokio::test]
 async fn load_from_memory() -> anyhow::Result<()> {
     let storage = InMemoryKeyValueStorage::new();
-    let (key, value) : (String, String)= ("key".into(), "value".into());
+    let (key, value): (String, String) = ("key".into(), "value".into());
 
-    storage.map.write().await.insert( key.clone(), value.clone());
-    let request = tonic::Request::new(LoadRequest{key:  key.clone()});
+    storage.map.write().await.insert(key.clone(), value.clone());
+    let request = tonic::Request::new(LoadRequest { key: key.clone() });
     let response = storage.load_key_value(request).await?;
-    assert_eq!(response.into_inner(), LoadReply{key: key, value: value});
-    
-    
+    assert_eq!(
+        response.into_inner(),
+        LoadReply {
+            key: key,
+            value: value
+        }
+    );
+
     Ok(())
-
 }
-

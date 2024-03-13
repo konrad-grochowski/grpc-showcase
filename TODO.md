@@ -16,3 +16,4 @@
     - [x] basics
     - [ ] verify
     - [ ]check for more
+- [ ] makefile
