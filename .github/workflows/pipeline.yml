@@ -6,8 +6,20 @@ jobs:
     name: Rust format check, lint & test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo fmt --check --all
-      - run: cargo clippy -- -D warnings
-      - run: cargo test --workspace
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install protobuf-compiler
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+
+      - name: Format check
+        run: cargo fmt --check --all
+
+      - name: Clippy check
+        run: cargo clippy -- -D warnings
+
+      - name: Run tests
+        run: cargo test --workspace
