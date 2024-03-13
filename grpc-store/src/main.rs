@@ -58,7 +58,7 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
         let maybe_value = map_guard.get(&key).cloned();
 
         let res = tonic::Response::new(LoadReply {
-            key: key,
+            key,
             value: maybe_value.unwrap(),
         }); //TODO handle None
         tracing::debug!(?res, "Sending response");
@@ -92,8 +92,8 @@ async fn load_from_memory() -> anyhow::Result<()> {
     assert_eq!(
         response.into_inner(),
         LoadReply {
-            key: key,
-            value: value
+            key,
+            value
         }
     );
 
