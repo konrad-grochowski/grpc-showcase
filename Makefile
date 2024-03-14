@@ -27,7 +27,7 @@ clean:
 e2e_test:
 	docker compose up --build -d | tee e2e_test.log;
 	cargo test  --release   -- --ignored --nocapture
-
+	docker-compose down
 
 generate_certificates:
 	./cert_gen.sh self-signed-certs/grpc-store grpc-store 0.0.0.0
