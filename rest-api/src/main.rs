@@ -23,17 +23,14 @@ async fn main() -> anyhow::Result<()> {
     // This makes connection multiplexing with `Arc<Mutex<...>>` redundant.
     // https://docs.rs/tonic/latest/tonic/client/index.html
     let channel = tls_grpc_channel().await?;
-    let grpc_client: KeyValueStorageClient<Channel> =
-        KeyValueStorageClient::new(channel);
-
+    let grpc_client: KeyValueStorageClient<Channel> = KeyValueStorageClient::new(channel);
 
     // configure certificate and private key used by https
     let config = RustlsConfig::from_pem_file(
-        PathBuf::from("/self-signed-certs/client")
-            .join("cert.pem"),
-            PathBuf::from("/self-signed-certs/client")
-            .join("key.pem"),
-    ).await?;
+        PathBuf::from("/self-signed-certs/rest-api").join("cert.pem"),
+        PathBuf::from("/self-signed-certs/rest-api").join("key.pem"),
+    )
+    .await?;
 
     let app = app(grpc_client);
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
@@ -55,16 +52,17 @@ fn app(grpc_client: KeyValueStorageClient<Channel>) -> Router {
 async fn tls_grpc_channel() -> anyhow::Result<Channel> {
     let data_dir = std::path::PathBuf::from_iter(["/self-signed-certs"]);
 
-    let ca = std::fs::read_to_string(data_dir.join("server/rootCA.crt")).unwrap();
+    let ca = std::fs::read_to_string(data_dir.join("grpc-store/rootCA.crt")).unwrap();
     let ca = tonic::transport::Certificate::from_pem(ca);
 
     let tls = tonic::transport::ClientTlsConfig::new()
         .ca_certificate(ca)
-        .domain_name("grpc-store");        
+        .domain_name("grpc-store");
 
     let channel = Channel::from_static("https://grpc-store:3001")
         .tls_config(tls)?
-        .connect().await?;
+        .connect()
+        .await?;
     Ok(channel)
 }
 
@@ -73,14 +71,14 @@ async fn store_key_value(
     State(mut grpc_client): State<KeyValueStorageClient<Channel>>,
     Json(store_request): Json<StoreRequest>,
 ) -> hyper::StatusCode {
-    tracing::debug!(?store_request, "Received storing request");
+    tracing::info!(?store_request, "Received storing request");
 
     let tonic_request = tonic::Request::new(store_request);
     let reply_result: Result<tonic::Response<()>, tonic::Status> =
         grpc_client.store_key_value(tonic_request).await;
 
     let Err(status) = reply_result else {
-        tracing::debug!("Key storing endpoint returned StatusCode::OK");
+        tracing::info!("Key storing endpoint returned StatusCode::OK");
         return hyper::StatusCode::OK;
     };
 
@@ -98,7 +96,7 @@ async fn load_key_value(
     State(mut grpc_client): State<KeyValueStorageClient<Channel>>,
     Json(load_request): Json<LoadRequest>,
 ) -> Result<Json<LoadReply>, hyper::StatusCode> {
-    tracing::debug!(?load_request, "Received load request");
+    tracing::info!(?load_request, "Received load request");
 
     let tonic_request = tonic::Request::new(load_request);
     let reply_result: Result<tonic::Response<LoadReply>, tonic::Status> =

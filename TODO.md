@@ -2,23 +2,23 @@
 
 ## 1. prio
 - [x] put proto buf codegen in separate crate
-- [ ] unit tests
+- [x] unit tests
     - [x] grpc-store
-    - [ ] rest-api
+    - [x] rest-api
 - [x] docker setup
     - [x] dockerfiles
     - [x] docker compose 
-- [ ] integration tests
+- [x] integration tests
     - docker compose for 2 services, and then cargo test inside the test directory
 - security
     - [x] HTTPS
-    - [ ] TLS
+    - [x] TLS
 - [ ] full docs
     - [ ] describe self-signed-certs creation process
 
 ## 2. prio
-- [ ] env file
-- [ ] makefile
+- [x] env file
+- [x] makefile
 
 
 ## 3. prio
