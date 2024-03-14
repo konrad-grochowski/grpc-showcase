@@ -4,18 +4,24 @@ use grpc_codegen::key_value_storage_server::KeyValueStorage;
 use grpc_codegen::key_value_storage_server::KeyValueStorageServer;
 use grpc_codegen::{LoadReply, LoadRequest, StoreRequest};
 use tokio::sync::RwLock;
-use tonic::{transport::Server, Request, Response, Status};
-
+use tonic::{transport::{Server, Identity}, Request, Response, Status};
+use tonic::transport::ServerTlsConfig;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
+    let certs_dir = std::path::PathBuf::from_iter(["/self-signed-certs/server"]);
+    let cert = std::fs::read_to_string(certs_dir.join("cert.pem"))?;
+    let key = std::fs::read_to_string(certs_dir.join("key.pem"))?;
+
+    let identity = Identity::from_pem(cert, key);
     let addr = "[::]:3001".parse()?;
-    let greeter = InMemoryKeyValueStorage::new();
+    let key_value_storage = InMemoryKeyValueStorage::new();
 
     tracing::info!("Starting gRPC server...");
     Server::builder()
-        .add_service(KeyValueStorageServer::new(greeter))
+        .tls_config(ServerTlsConfig::new().identity(identity))?
+        .add_service(KeyValueStorageServer::new(key_value_storage))
         .serve(addr)
         .await?;
 

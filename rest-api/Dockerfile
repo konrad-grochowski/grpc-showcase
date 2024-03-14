@@ -28,5 +28,6 @@ RUN  cargo build --release --bin rest-api
 FROM debian:bookworm-slim AS runtime
 
 WORKDIR /context/app
+COPY ./self-signed-certs /self-signed-certs
 COPY --from=builder /context/app/target/release/rest-api /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/rest-api"]

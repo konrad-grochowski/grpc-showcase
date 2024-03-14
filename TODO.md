@@ -11,9 +11,10 @@
 - [ ] integration tests
     - docker compose for 2 services, and then cargo test inside the test directory
 - security
-    - [ ] HTTPS
+    - [x] HTTPS
     - [ ] TLS
 - [ ] full docs
+    - [ ] describe self-signed-certs creation process
 
 ## 2. prio
 - [ ] env file
