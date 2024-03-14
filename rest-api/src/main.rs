@@ -1,5 +1,5 @@
 ///! HTTP server acting as a procy to a gRPC service
-/// 
+///
 /// See README for more information.
 #[cfg(test)]
 mod tests;
