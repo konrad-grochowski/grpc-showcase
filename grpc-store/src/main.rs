@@ -1,3 +1,7 @@
+//! gRPC service implementation.
+//! 
+//! For service specification, see `grpc-codegen` catalogue
+
 use std::collections::HashMap;
 
 use grpc_codegen::key_value_storage_server::KeyValueStorage;
@@ -31,6 +35,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+
+/// Holds a `HashMap``, protected from data races by `RwLock`.
+/// Modifies the map on store requests and retrieves data from it
+/// on load requests.
 #[derive(Debug, Default)]
 pub struct InMemoryKeyValueStorage {
     map: RwLock<HashMap<String, String>>,

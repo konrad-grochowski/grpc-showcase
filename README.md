@@ -35,3 +35,13 @@ This script performs the following procedure (twice, each for for each service):
 
 The signing process uses `extfile` containing details regarding signing. 
 It's necessary to ensure `rustls` TLS implementation will respect the certificate.
+
+### Running services
+To run services, use `make run` This invokes a `docker compose` command.
+(Note: requires certs generation beforehand)
+
+### E2E test
+To perform E2E test consisting of large numbers of store and load operations, 
+run `make e2e_test`.
+(Note: requires certs generation beforehand)
+

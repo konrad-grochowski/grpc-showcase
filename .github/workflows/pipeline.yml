@@ -2,7 +2,7 @@ name: Basic Rust CI
 on: [push, pull_request]
 
 jobs:
-  cargo-validations:
+  basic-validate:
     name: Rust format check, lint & test
     runs-on: ubuntu-latest
     steps:
@@ -25,6 +25,7 @@ jobs:
         run: cargo test --workspace
 
   e2e-test:
+    needs: basic-validate
     name: E2E Docker test
     runs-on: ubuntu-latest
     steps:
@@ -33,6 +34,9 @@ jobs:
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Install protobuf-compiler (test dependency)
+        run: sudo apt-get install -y protobuf-compiler
 
       - name: Generate self-signed certificates
         run: make generate_certificates
