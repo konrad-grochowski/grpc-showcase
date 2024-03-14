@@ -550,6 +550,8 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 name = "grpc-codegen"
 version = "0.1.0"
 dependencies = [
+ "prost",
+ "serde",
  "tonic",
  "tonic-build",
 ]
@@ -1381,7 +1383,9 @@ dependencies = [
  "hyper 1.2.0",
  "mime",
  "prost",
+ "serde",
  "tokio",
+ "tokio-rustls 0.25.0",
  "tokio-stream",
  "tonic",
  "tonic-build",
