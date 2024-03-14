@@ -15,3 +15,5 @@ services:
     build:
       context: ./
       dockerfile: ./grpc-store/Dockerfile
+    env_file:
+      - .env
