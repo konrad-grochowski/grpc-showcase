@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use std::net::SocketAddr;
 
 use axum::routing::post;
@@ -22,10 +25,7 @@ async fn main() {
             .await
             .expect("Failed to connect to gRPC server");
 
-    let app = Router::new()
-        .route("/store", post(store_key_value))
-        .route("/load", get(load_key_value))
-        .with_state(grpc_client);
+    let app = app(grpc_client);
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
 
     tracing::info!("Starting server...");
@@ -33,6 +33,13 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .expect("Failed to set up HTTP server");
+}
+
+fn app(grpc_client: KeyValueStorageClient<Channel>) -> Router {
+    Router::new()
+        .route("/store", post(store_key_value))
+        .route("/load", get(load_key_value))
+        .with_state(grpc_client)
 }
 
 /// Handles requests to store a key-value pair inside the gRPC memory.

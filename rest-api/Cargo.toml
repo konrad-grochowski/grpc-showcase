@@ -27,3 +27,8 @@ path = "../grpc-codegen"
 
 [build-dependencies]
 tonic-build = "0.11"
+
+[dev-dependencies]
+mime = "0.3.17"
+tokio-stream = { version = "0.1.14", features = ["net"] }
+tower = "0.4.13"
