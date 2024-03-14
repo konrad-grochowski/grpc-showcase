@@ -18,7 +18,7 @@ fmt:
 clippy_dirty_fix:
 	$(CARGO) clippy --fix --allow-dirty
 
-precommit:  clippy-dirty-fix fmt test
+precommit:  clippy_dirty_fix fmt test
 
 
 clean:
@@ -26,9 +26,9 @@ clean:
 
 e2e_test:
 	docker compose up --build -d | tee e2e_test.log;
-	cargo test  --release   -- --ignored --nocapture
+	cargo test --release -- --ignored --nocapture
 	docker-compose down
 
 generate_certificates:
-	./cert_gen.sh self-signed-certs/grpc-store grpc-store 0.0.0.0
-	./cert_gen.sh self-signed-certs/rest-api rest-api 127.0.0.1
+	./cert_gen.sh self-signed-certs/grpc-store grpc-store grpc-store 0.0.0.0
+	./cert_gen.sh self-signed-certs/rest-api rest-api localhost 127.0.0.1

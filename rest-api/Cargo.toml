@@ -17,6 +17,7 @@ anyhow = "1.0.81"
 prost = "0.12"
 serde = { version = "1.0.197", features = ["derive"] }
 tokio-rustls = "0.25.0"
+
 [dependencies.grpc-codegen]
 path = "../grpc-codegen"
 

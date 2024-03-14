@@ -14,7 +14,7 @@ use serde_json::json;
 async fn e2e_store_load_test() -> anyhow::Result<()> {
     const FUTURES_NUM: usize = 10000;
 
-    let ca = std::fs::read_to_string("../self-signed-certs/client/rootCA.crt")?;
+    let ca = std::fs::read_to_string("../self-signed-certs/rest-api/rootCA.crt")?;
     let ca = reqwest::Certificate::from_pem(&ca.into_bytes())?;
 
     let client = reqwest::Client::builder()

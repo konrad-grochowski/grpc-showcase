@@ -14,8 +14,8 @@ authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = $2
-IP.1 = $3
+DNS.1 = $3
+IP.1 = $4
 EOF
 
 # Sign the CSR (`cert.pem`) with the root CA certificate and private key

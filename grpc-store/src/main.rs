@@ -1,5 +1,5 @@
 //! gRPC service implementation.
-//! 
+//!
 //! For service specification, see `grpc-codegen` catalogue
 
 use std::collections::HashMap;
@@ -34,7 +34,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-
 
 /// Holds a `HashMap``, protected from data races by `RwLock`.
 /// Modifies the map on store requests and retrieves data from it
