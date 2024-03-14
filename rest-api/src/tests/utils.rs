@@ -2,14 +2,11 @@ use grpc_codegen::{
     key_value_storage_client::KeyValueStorageClient,
     key_value_storage_server::{KeyValueStorage, KeyValueStorageServer},
 };
-use hyper::{body::Body, Request};
-use tokio::{
-    net::{tcp, TcpListener},
-    task::JoinHandle,
-};
+
+use tokio::net::TcpListener;
 use tokio_stream::wrappers::TcpListenerStream;
 use tonic::transport::{Channel, Server};
-use tower::util::ServiceExt;
+
 /// Mock implementation for gRPC service.
 /// asserts and returns key/value pair given in constructor
 #[derive(Debug, Default)]
@@ -20,7 +17,10 @@ pub(super) struct MockKeyValueStorage {
 
 impl MockKeyValueStorage {
     pub(super) fn new(key: String, value: impl Into<Option<String>>) -> Self {
-        Self { key, value: value.into() }
+        Self {
+            key,
+            value: value.into(),
+        }
     }
 }
 
@@ -44,7 +44,10 @@ impl KeyValueStorage for MockKeyValueStorage {
 
         let res = tonic::Response::new(grpc_codegen::LoadReply {
             key: self.key.clone(),
-            value: self.value.clone().ok_or_else(|| tonic::Status::not_found("There is no entry under provided key"))?,
+            value: self
+                .value
+                .clone()
+                .ok_or_else(|| tonic::Status::not_found("There is no entry under provided key"))?,
         });
 
         Ok(res)

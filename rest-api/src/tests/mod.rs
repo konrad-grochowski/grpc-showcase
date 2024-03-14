@@ -3,14 +3,9 @@ mod utils;
 use crate::tests::utils::{get_client_to_mock_grpc_server, MockKeyValueStorage};
 
 use super::*;
-use grpc_codegen::key_value_storage_server::{KeyValueStorage, KeyValueStorageServer};
-use hyper::{body::Body, Request};
-use tokio::{
-    net::{tcp, TcpListener},
-    task::JoinHandle,
-};
-use tokio_stream::wrappers::TcpListenerStream;
-use tonic::transport::Server;
+
+use hyper::Request;
+
 use tower::util::ServiceExt;
 
 /// Verifies `/store` endpoint happy path.
@@ -92,8 +87,6 @@ async fn load_key_value_incorrect_payload() -> anyhow::Result<()> {
     Ok(())
 }
 
-
-
 /// Verifies `/load` endpoint response to invalid payload.
 #[tokio::test]
 async fn store_key_value_incorrect_payload() -> anyhow::Result<()> {
@@ -139,7 +132,6 @@ async fn load_key_value_missing_key() -> anyhow::Result<()> {
         .await
         .unwrap();
     assert_eq!(res.status(), hyper::StatusCode::NOT_FOUND);
-
 
     Ok(())
 }
