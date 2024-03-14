@@ -42,8 +42,9 @@ To run services, use `make run` This invokes a `docker compose` command.
 
 ### E2E test
 To perform E2E test consisting of large numbers of store and load operations, 
-run `make e2e_test`.
-(Note: requires certs generation beforehand)
+run `make e2e_test`. (Note: requires certs generation beforehand)
+If you prefer to prepare the environment yourself (docker compose up) to interact with it on your terms,
+you can also invoke `make e2e_test_no_environment`.
 
 ### Changing log level
 To display logs at different granularity level, modify env var in `.env` file.

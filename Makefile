@@ -25,9 +25,12 @@ clean:
 	$(CARGO) clean
 
 e2e_test:
-	docker compose up --build -d | tee e2e_test.log;
+	docker compose up --build -d ;
 	cargo test --release -- --ignored --nocapture
 	docker-compose down
+
+e2e_test_no_environment:
+	cargo test --release -- --ignored --nocapture
 
 generate_certificates:
 	./cert_gen.sh self-signed-certs/grpc-store grpc-store grpc-store 0.0.0.0
