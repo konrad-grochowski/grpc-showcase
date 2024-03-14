@@ -24,3 +24,14 @@ This is a dependency to both of the above services.
 Contains test cases for integration tests. Requires running `docker compose` before executing the tests.
 
 ## Manual
+
+### Certificates generation
+Project requires generation of TLS certificates to work.
+To generate certificates, run `make generate_certificates`.
+This script performs the following procedure (twice, each for for each service):
+- generate private key and certificate signing request (CSR) for the service,
+- generate self-signed certificate authority (CA) key,
+- sign the CSR with the CA key.
+
+The signing process uses `extfile` containing details regarding signing. 
+It's necessary to ensure `rustls` TLS implementation will respect the certificate.

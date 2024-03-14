@@ -4,13 +4,16 @@ use grpc_codegen::key_value_storage_server::KeyValueStorage;
 use grpc_codegen::key_value_storage_server::KeyValueStorageServer;
 use grpc_codegen::{LoadReply, LoadRequest, StoreRequest};
 use tokio::sync::RwLock;
-use tonic::{transport::{Server, Identity}, Request, Response, Status};
 use tonic::transport::ServerTlsConfig;
+use tonic::{
+    transport::{Identity, Server},
+    Request, Response, Status,
+};
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
-    let certs_dir = std::path::PathBuf::from_iter(["/self-signed-certs/server"]);
+    let certs_dir = std::path::PathBuf::from_iter(["/self-signed-certs/grpc-store"]);
     let cert = std::fs::read_to_string(certs_dir.join("cert.pem"))?;
     let key = std::fs::read_to_string(certs_dir.join("key.pem"))?;
 
@@ -47,11 +50,11 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
         &self,
         request: Request<StoreRequest>,
     ) -> Result<Response<()>, Status> {
-        tracing::debug!(?request, "Got a store request");
+        tracing::info!(?request, "Got a store request");
         let mut map_guard = self.map.write().await;
         let inner = request.into_inner();
         map_guard.insert(inner.key, inner.value);
-        tracing::debug!("Successfully inserted key");
+        tracing::info!("Successfully inserted key");
         Ok(Response::new(()))
     }
 
@@ -68,7 +71,7 @@ impl KeyValueStorage for InMemoryKeyValueStorage {
             .clone();
 
         let res = tonic::Response::new(LoadReply { key, value });
-        tracing::debug!(?res, "Sending response");
+        tracing::info!(?res, "Sending response");
 
         Ok(res)
     }
