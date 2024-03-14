@@ -2,9 +2,11 @@
 mod tests;
 
 use std::net::SocketAddr;
+use std::path::PathBuf;
 
 use axum::routing::post;
 use axum::{extract::State, routing::get, Json, Router};
+use axum_server::tls_rustls::RustlsConfig;
 use grpc_codegen::key_value_storage_client::KeyValueStorageClient;
 use grpc_codegen::StoreRequest;
 use tonic::transport::Channel;
@@ -12,7 +14,7 @@ use tonic::transport::Channel;
 use grpc_codegen::{LoadReply, LoadRequest};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
     tracing::info!("Getting gRPC connection...");
@@ -20,19 +22,27 @@ async fn main() {
     // As per documentation, cloning the gRPC client is cheap.
     // This makes connection multiplexing with `Arc<Mutex<...>>` redundant.
     // https://docs.rs/tonic/latest/tonic/client/index.html
+    let channel = tls_grpc_channel().await?;
     let grpc_client: KeyValueStorageClient<Channel> =
-        KeyValueStorageClient::connect("http://grpc-store:3001")
-            .await
-            .expect("Failed to connect to gRPC server");
+        KeyValueStorageClient::new(channel);
+
+
+    // configure certificate and private key used by https
+    let config = RustlsConfig::from_pem_file(
+        PathBuf::from("/self-signed-certs/client")
+            .join("cert.pem"),
+            PathBuf::from("/self-signed-certs/client")
+            .join("key.pem"),
+    ).await?;
 
     let app = app(grpc_client);
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
 
     tracing::info!("Starting server...");
-    axum_server::bind(addr)
+    axum_server::bind_rustls(addr, config)
         .serve(app.into_make_service())
-        .await
-        .expect("Failed to set up HTTP server");
+        .await?;
+    Ok(())
 }
 
 fn app(grpc_client: KeyValueStorageClient<Channel>) -> Router {
@@ -40,6 +50,22 @@ fn app(grpc_client: KeyValueStorageClient<Channel>) -> Router {
         .route("/store", post(store_key_value))
         .route("/load", get(load_key_value))
         .with_state(grpc_client)
+}
+
+async fn tls_grpc_channel() -> anyhow::Result<Channel> {
+    let data_dir = std::path::PathBuf::from_iter(["/self-signed-certs"]);
+
+    let ca = std::fs::read_to_string(data_dir.join("server/rootCA.crt")).unwrap();
+    let ca = tonic::transport::Certificate::from_pem(ca);
+
+    let tls = tonic::transport::ClientTlsConfig::new()
+        .ca_certificate(ca)
+        .domain_name("grpc-store");        
+
+    let channel = Channel::from_static("https://grpc-store:3001")
+        .tls_config(tls)?
+        .connect().await?;
+    Ok(channel)
 }
 
 /// Handles requests to store a key-value pair inside the gRPC memory.
@@ -57,7 +83,7 @@ async fn store_key_value(
         tracing::debug!("Key storing endpoint returned StatusCode::OK");
         return hyper::StatusCode::OK;
     };
-    // TODO: delegate into separate impl block (newtype pattern?)
+
     let hyper_status_code = tonic_status_into_hyper_status_code(status);
     tracing::warn!(
         ?hyper_status_code,
