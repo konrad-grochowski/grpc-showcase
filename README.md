@@ -45,3 +45,6 @@ To perform E2E test consisting of large numbers of store and load operations,
 run `make e2e_test`.
 (Note: requires certs generation beforehand)
 
+### Changing log level
+To display logs at different granularity level, modify env var in `.env` file.
+Allowed options: `debug`, `trace`, `info`, `warn`, `error`.

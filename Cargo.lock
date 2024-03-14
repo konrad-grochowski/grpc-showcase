@@ -178,18 +178,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "axum-macros"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00c055ee2d014ae5981ce1016374e8213682aa14d9bf40e48ab48b5f3ef20eaa"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn 2.0.52",
-]
-
-[[package]]
 name = "axum-server"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -407,15 +395,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
 
 [[package]]
-name = "features"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83072b3c84e55f9d0c0ff36a4575d0fd2e543ae4a56e04e7f5a9222188d574e3"
-dependencies = [
- "bitflags 1.3.2",
-]
-
-[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -571,8 +550,6 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 name = "grpc-codegen"
 version = "0.1.0"
 dependencies = [
- "prost",
- "serde",
  "tonic",
  "tonic-build",
 ]
@@ -583,15 +560,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "grpc-codegen",
- "hyper 1.2.0",
  "prost",
- "rustls-pemfile 2.1.1",
- "serde",
  "tokio",
  "tonic",
  "tonic-build",
- "tower",
- "tower-http",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1404,22 +1376,16 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum 0.7.4",
- "axum-macros",
  "axum-server",
- "features",
  "grpc-codegen",
  "hyper 1.2.0",
  "mime",
  "prost",
- "rustls-pemfile 2.1.1",
- "serde",
  "tokio",
- "tokio-rustls 0.25.0",
  "tokio-stream",
  "tonic",
  "tonic-build",
  "tower",
- "tower-http",
  "tracing",
  "tracing-subscriber",
 ]
@@ -2013,22 +1979,6 @@ dependencies = [
  "tower-layer",
  "tower-service",
  "tracing",
-]
-
-[[package]]
-name = "tower-http"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e9cd434a998747dd2c4276bc96ee2e0c7a2eadf3cae88e52be55a05fa9053f5"
-dependencies = [
- "bitflags 2.4.2",
- "bytes",
- "http 1.1.0",
- "http-body 1.0.0",
- "http-body-util",
- "pin-project-lite",
- "tower-layer",
- "tower-service",
 ]
 
 [[package]]
